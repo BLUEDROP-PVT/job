@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Job Portal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #0073e6;
+            color: white;
+            padding: 1rem 2rem;
+            text-align: center;
+        }
+        .search-bar {
+            margin: 1rem auto;
+            max-width: 600px;
+            display: flex;
+            gap: 0.5rem;
+        }
+        .search-bar input[type="text"] {
+            flex-grow: 1;
+            padding: 0.5rem;
+            font-size: 1rem;
+        }
+        .search-bar button {
+            padding: 0.5rem 1rem;
+            background-color: #0073e6;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .filters {
+            max-width: 600px;
+            margin: 0 auto 1rem auto;
+            display: flex;
+            gap: 1rem;
+        }
+        .filters select {
+            padding: 0.5rem;
+            font-size: 1rem;
+        }
+        .job-listings {
+            max-width: 600px;
+            margin: 0 auto 2rem auto;
+            background-color: white;
+            padding: 1rem;
+            border-radius: 5px;
+        }
+        .job {
+            border-bottom: 1px solid #ddd;
+            padding: 1rem 0;
+        }
+        .job:last-child {
+            border-bottom: none;
+        }
+        .job-title {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #0073e6;
+        }
+        .company, .location {
+            font-size: 0.9rem;
+            color: #555;
+        }
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: #0073e6;
+            color: white;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <style>
+                @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+                nav {
+                    background: linear-gradient(90deg, #0052d4, #4364f7, #6fb1fc);
+                    color: white;
+                    padding: 1rem 1rem;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+                    font-family: 'Poppins', Arial, sans-serif;
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100vw;
+                    z-index: 1000;
+                }
+                body {
+                    padding-top: 60px; /* height of nav + some spacing */
+                }
+                nav .title {
+                    font-size: 1.5rem;
+                    font-weight: 600;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                }
+                nav .title svg.logo {
+                    width: 40px;
+                    height: 40px;
+                    fill: white;
+                    border-radius: 50%;
+                    background: #4364f7;
+                    padding: 4px;
+                }
+                nav .title img.logo {
+                    height: 40px;
+                    border-radius: 8px;
+                }
+                nav .title img.logo {
+                    height: 40px;
+                    border-radius: 8px;
+                }
+                nav a {
+                    color: white;
+                    text-decoration: none;
+                    font-size: 1rem;
+                    margin-left: 0.3rem;
+                    display: 300px;
+                    align-items: center;
+                    gap: 0.2rem;
+                    position: relative;
+                    padding-bottom: 2px;
+                    transition: all 0.3s ease;
+                }
+                nav a:hover {
+                    text-decoration: none;
+                }
+                nav a::after {
+                    content: '';
+                    position: absolute;
+                    width: 0%;
+                    height: 2px;
+                    bottom: 0;
+                    left: 0;
+                    background-color: white;
+                    transition: width 0.3s ease;
+                }
+                nav a:hover::after {
+                    width: 100%;
+                }
+                nav a svg {
+                    width: 18px;
+                    height: 18px;
+                    fill: white;
+                }
+            </style>
+            <div class="title">
+                <img src="BDlogo.jpg" alt="Logo" class="logo" />
+                portol
+            </div>
+            <div>
+                <a href="index.html">
+                    Chat
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 6h-2v9H5v2h14l4 4V6z"/></svg>
+                </a>
+            </div>
+        </nav>
+    </header>
+    <section class="search-bar">
+        <input type="text" placeholder="Search jobs by title or keywords" id="searchInput">
+        <button id="searchBtn">Search</button>
+    </section>
+    <section class="filters">
+        <select id="locationFilter">
+            <option value="">All Locations</option>
+            <option value="andhra_pradesh">Andhra Pradesh</option>
+            <option value="arunachal_pradesh">Arunachal Pradesh</option>
+            <option value="assam">Assam</option>
+            <option value="bihar">Bihar</option>
+            <option value="chhattisgarh">Chhattisgarh</option>
+            <option value="goa">Goa</option>
+            <option value="gujarat">Gujarat</option>
+            <option value="haryana">Haryana</option>
+            <option value="himachal_pradesh">Himachal Pradesh</option>
+            <option value="jharkhand">Jharkhand</option>
+            <option value="karnataka">Karnataka</option>
+            <option value="kerala">Kerala</option>
+            <option value="madhya_pradesh">Madhya Pradesh</option>
+            <option value="maharashtra">Maharashtra</option>
+            <option value="manipur">Manipur</option>
+            <option value="meghalaya">Meghalaya</option>
+            <option value="mizoram">Mizoram</option>
+            <option value="nagaland">Nagaland</option>
+            <option value="odisha">Odisha</option>
+            <option value="punjab">Punjab</option>
+            <option value="rajasthan">Rajasthan</option>
+            <option value="sikkim">Sikkim</option>
+            <option value="tamil_nadu">Tamil Nadu</option>
+            <option value="telangana">Telangana</option>
+            <option value="tripura">Tripura</option>
+            <option value="uttar_pradesh">Uttar Pradesh</option>
+            <option value="uttarakhand">Uttarakhand</option>
+            <option value="west_bengal">West Bengal</option>
+            <option value="andaman_nicobar">Andaman and Nicobar Islands</option>
+            <option value="chandigarh">Chandigarh</option>
+            <option value="dadra_nagar_haveli">Dadra and Nagar Haveli</option>
+            <option value="daman_diu">Daman and Diu</option>
+            <option value="delhi">Delhi</option>
+            <option value="jammu_kashmir">Jammu and Kashmir</option>
+            <option value="ladakh">Ladakh</option>
+            <option value="lakshadweep">Lakshadweep</option>
+            <option value="puducherry">Puducherry</option>
+            <option value="remote">Remote</option>
+        </select>
+        <select id="jobTypeFilter">
+            <option value="">All Job Types</option>
+            <option value="fulltime">Full-time</option>
+            <option value="parttime">Part-time</option>
+            <option value="contract">Contract</option>
+        </select>
+    </section>
+    <section class="job-listings" id="jobListings">
+        <div class="job">
+            <div class="job-title"><a href="#" class="job-link" data-job="SALES">SALES</a></div>
+            <div class="company">BLUEDROP.PVT</div>
+            <div class="location">BANGALORE</div>
+            <p> Promoting the brand and productes to the clients safely.</p>
+        </div>
+        <div class="job">
+            <div class="job-title"><a href="#" class="job-link" data-job="Courier Delivery Boy">Courier Delivery Boy</a></div>
+            <div class="company">BLUEDROP.PVT</div>
+            <div class="location">BANGALORE</div>
+            <p>Handle the packages and parcel </p>
+        </div>
+        <div class="job">
+            <div class="job-title"><a href="#" class="job-link" data-job=" Delivery Boy"> Delivery Boy</a></div>
+            <div class="company">BLUEDROP.PVT</div>
+            <div class="location">BANGALORE</div>
+            <p>deliveries across the city ensuring timely delivery to customers with excellent customer service.</p>
+        </div>
+    </section>
+    <section class="applications-section">
+      <h2></h2>
+      <table id="applicationsTable" border="1" style="width: 100%; border-collapse: collapse;">
+        <thead>
+          <tr>
+          <!--   <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Job Title</th> -->
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Applications will be populated here -->
+        </tbody>
+      </table>
+    </section>
+    <footer>
+        © 2024 Job Portal. All rights reserved.
+    </footer>
+    <!-- Modal for job application form -->
+    <div id="jobModal" class="modal">
+      <div class="modal-content">
+        <span class="close">×</span>
+        <h2 id="modalJobTitle">Apply for Job</h2>
+        <form id="jobForm">
+          <label for="name">Name:</label><br>
+          <input type="text" id="name" name="name" required=""><br>
+          <label for="email">Email:</label><br>
+          <input type="email" id="email" name="email" required=""><br>
+          <label for="phone">Phone:</label><br>
+          <input type="tel" id="phone" name="phone" required=""><br>
+          <label for="age">Age:</label><br>
+          <input type="number" id="age" name="age" min="18" max="65" required><br>
+          <label>Driving License:</label><br>
+          <label><input type="radio" name="drivingLicense" value="yes" required> Yes</label>
+          <label><input type="radio" name="drivingLicense" value="no"> No</label><br>
+          <label>Bike:</label><br>
+          <label><input type="radio" name="bike" value="yes" required> Yes</label>
+          <label><input type="radio" name="bike" value="no"> No</label><br>
+          <input type="submit" value="Submit">
+        </form>
+      </div>
+    </div>
+
+    <script>
+      // Get modal elements
+      const modal = document.getElementById("jobModal");
+      const modalJobTitle = document.getElementById("modalJobTitle");
+      const closeBtn = document.querySelector(".close");
+      const jobLinks = document.querySelectorAll(".job-link");
+      const jobForm = document.getElementById("jobForm");
+
+      // Open modal on job title click
+      jobLinks.forEach(link => {
+        link.addEventListener("click", function(event) {
+          event.preventDefault();
+          const jobTitle = this.getAttribute("data-job");
+          modalJobTitle.textContent = `Apply for ${jobTitle}`;
+          modal.style.display = "block";
+        });
+      });
+
+      // Close modal on close button click
+      closeBtn.addEventListener("click", () => {
+        modal.style.display = "none";
+        jobForm.reset();
+      });
+
+      // Close modal when clicking outside modal content
+      window.addEventListener("click", (event) => {
+        if (event.target == modal) {
+          modal.style.display = "none";
+          jobForm.reset();
+        }
+      });
+
+      // Handle form submission
+      jobForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const formData = {
+          name: document.getElementById("name").value,
+          email: document.getElementById("email").value,
+          phone: document.getElementById("phone").value,
+          age: document.getElementById("age").value,
+          drivingLicense: document.querySelector('input[name="drivingLicense"]:checked')?.value,
+          bike: document.querySelector('input[name="bike"]:checked')?.value,
+          job_title: modalJobTitle.textContent.replace("Apply for ", "")
+        };
+      fetch("https://formspree.io/f/xkgrnqae", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(formData)
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Show success popup immediately before hiding modal and resetting form
+            successPopup.style.display = 'flex';
+            modal.style.display = "none";
+            jobForm.reset();
+          } else if (data.errors) {
+            alert("Error: " + data.errors.map(e => e.message).join(", "));
+          }
+        })
+        .catch(error => {
+          alert("Error submitting application: " + error);
+        });
+      });
+    </script>
+    <style>
+      /* Modal styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.5);
+      }
+      .modal-content {
+        background-color: #fefefe;
+        margin: 10% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 90%;
+        max-width: 400px;
+        border-radius: 5px;
+      }
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .close:hover,
+      .close:focus {
+        color: black;
+        text-decoration: none;
+      }
+      #jobForm input[type="text"],
+      #jobForm input[type="email"],
+      #jobForm input[type="tel"] {
+        width: 100%;
+        padding: 8px;
+        margin: 6px 0 12px 0;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      #jobForm input[type="submit"] {
+        background-color: #0073e6;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        cursor: pointer;
+        border-radius: 4px;
+        font-size: 1rem;
+      }
+      #jobForm input[type="submit"]:hover {
+        background-color: #005bb5;
+      }
+    </style>
+    <script>
+      // Fetch and display applications
+      function fetchApplications() {
+        fetch("http://localhost:5000/applications")
+          .then(response => response.json())
+          .then(data => {
+            const tbody = document.querySelector("#applicationsTable tbody");
+            tbody.innerHTML = "";
+            if (Array.isArray(data)) {
+              data.forEach(app => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                  <td>${app.Name}</td>
+                  <td>${app.Email}</td>
+                  <td>${app.Phone}</td>
+                  <td>${app["Job Title"]}</td>
+                `;
+                tbody.appendChild(row);
+              });
+            }
+          })
+          .catch(error => {
+            console.error("Error fetching applications:", error);
+          });
+      }
+      // Call fetchApplications periodically to update the table
+      setInterval(fetchApplications, 5000);
+      // Also fetch on page load
+      window.onload = fetchApplications;
+  </script>
+
+  <!-- Success popup modal -->
+  <div id="success-popup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; flex-direction: column;">
+    <div style="background:#fff; padding:20px; border-radius:8px; max-width:300px; width:90%; text-align:center;">
+      <h2>Form Submitted</h2>
+      <p>Your application has been submitted successfully.</p>
+      <button id="success-ok-btn" style="padding:8px 16px; border:none; background:#007bff; color:#fff; border-radius:4px; cursor:pointer;">OK</button>
+    </div>
+  </div>
+
+  <script>
+    const successPopup = document.getElementById('success-popup');
+    const successOkBtn = document.getElementById('success-ok-btn');
+
+    successOkBtn.addEventListener('click', () => {
+      successPopup.style.display = 'none';
+    });
+  </script>
+</body>
+</html>

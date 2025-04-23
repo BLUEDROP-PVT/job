@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Chat Window</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+  <style>
+    #container {
+      max-width: 600px;
+      margin: 40px auto;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #fff;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      height: 80vh;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    #chat-window {
+      flex-grow: 1;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      padding: 10px;
+      background: #fafafa;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    #chat-messages {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    #chat-messages li {
+      margin-bottom: 8px;
+      padding: 8px 12px;
+      border-radius: 15px;
+      max-width: 70%;
+      word-wrap: break-word;
+    }
+    #chat-messages li.user-message {
+      background-color: #4a90e2;
+      color: white;
+      align-self: flex-start;
+    }
+    #chat-messages li.admin-reply {
+      background-color: #e0f7fa;
+      color: #00796b;
+      align-self: flex-end;
+    }
+    #reply-form {
+      display: flex;
+    }
+    #reply-input {
+      flex-grow: 1;
+      padding: 10px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px 0 0 4px;
+      outline: none;
+    }
+    #reply-form button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      border: none;
+      background-color: #4a90e2;
+      color: white;
+      border-radius: 0 4px 4px 0;
+      cursor: pointer;
+    }
+    #reply-form button:hover {
+      background-color: #357ABD;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <h1 id="chat-with"></h1>
+    <div id="chat-window">
+      <ul id="chat-messages"></ul>
+    </div>
+    <form id="reply-form">
+      <input type="text" id="reply-input" placeholder="Type your reply here..." autocomplete="off" />
+      <button type="submit">Send</button>
+    </form>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+  apiKey: "AIzaSyDh5twfwkFaVHbPeaZ2D3FLdNxRScVrGGY",
+  authDomain: "bluedrop-eccbb.firebaseapp.com",
+  databaseURL: "https://bluedrop-eccbb-default-rtdb.firebaseio.com",
+  projectId: "bluedrop-eccbb",
+  storageBucket: "bluedrop-eccbb.firebasestorage.app",
+  messagingSenderId: "820696594586",
+  appId: "1:820696594586:web:c685de23a831c59ec9c723",
+  measurementId: "G-KGN4QW4XWX"
+};
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const chatWithElem = document.getElementById('chat-with');
+    const chatMessagesUl = document.getElementById('chat-messages');
+    const replyForm = document.getElementById('reply-form');
+    const replyInput = document.getElementById('reply-input');
+
+    // Parse query params for uid and name
+    const urlParams = new URLSearchParams(window.location.search);
+    const userUid = urlParams.get('uid');
+    const userName = urlParams.get('name');
+
+    if (!userUid || !userName) {
+      alert('User not specified.');
+      window.location.href = 'admin.html';
+    }
+
+    chatWithElem.textContent = 'Chat with ' + userName;
+
+    // Load messages from selected user and their replies
+    function loadUserMessages() {
+      const messagesRef = db.ref('quiries');
+      messagesRef.orderByChild('uid').equalTo(userUid).on('value', snapshot => {
+        chatMessagesUl.innerHTML = '';
+        snapshot.forEach(childSnapshot => {
+          const message = childSnapshot.val();
+          const liUser = document.createElement('li');
+          liUser.textContent = message.name + ': ' + message.text;
+          liUser.classList.add('user-message');
+          chatMessagesUl.appendChild(liUser);
+
+          // Load replies for this message
+          const repliesRef = db.ref('replies/' + childSnapshot.key);
+          repliesRef.once('value', replySnapshot => {
+            replySnapshot.forEach(replyChild => {
+              const reply = replyChild.val();
+              const liReply = document.createElement('li');
+              liReply.textContent = 'Admin: ' + reply.text;
+              liReply.classList.add('admin-reply');
+              chatMessagesUl.appendChild(liReply);
+            });
+          });
+        });
+        chatMessagesUl.scrollTop = chatMessagesUl.scrollHeight;
+      });
+    }
+
+    replyForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const replyText = replyInput.value.trim();
+      if (!replyText) return;
+
+      // Find the latest message key from the selected user to reply to
+      const messagesRef = db.ref('quiries');
+      messagesRef.orderByChild('uid').equalTo(userUid).limitToLast(1).once('value', snapshot => {
+        let lastMessageKey = null;
+        snapshot.forEach(childSnapshot => {
+          lastMessageKey = childSnapshot.key;
+        });
+        if (lastMessageKey) {
+          const repliesRef = db.ref('replies/' + lastMessageKey);
+          repliesRef.push({
+            text: replyText,
+            timestamp: Date.now()
+          });
+          replyInput.value = '';
+        }
+      });
+    });
+
+    loadUserMessages();
+  </script>
+</body>
+</html>

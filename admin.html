@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin User List</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+  <style>
+    #container {
+      max-width: 400px;
+      margin: 40px auto;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #fff;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      color: #4a90e2;
+      font-weight: bold;
+    }
+    li:hover {
+      background-color: #f0f8ff;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <h1>Users</h1>
+    <ul id="users-ul"></ul>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+  apiKey: "AIzaSyDh5twfwkFaVHbPeaZ2D3FLdNxRScVrGGY",
+  authDomain: "bluedrop-eccbb.firebaseapp.com",
+  databaseURL: "https://bluedrop-eccbb-default-rtdb.firebaseio.com",
+  projectId: "bluedrop-eccbb",
+  storageBucket: "bluedrop-eccbb.firebasestorage.app",
+  messagingSenderId: "820696594586",
+  appId: "1:820696594586:web:c685de23a831c59ec9c723",
+  measurementId: "G-KGN4QW4XWX"
+};
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const usersUl = document.getElementById('users-ul');
+
+    // List of admin users to include even if they have no messages
+    const adminUsers = [
+      { uid: 'adminUid1', name: 'Admin1' },
+      { uid: 'adminUid2', name: 'Admin2' }
+    ];
+
+    // Load distinct users from "quiries" and include admins
+    function loadUsers() {
+      const messagesRef = db.ref('quiries');
+      messagesRef.once('value', snapshot => {
+        const userMap = new Map();
+        snapshot.forEach(childSnapshot => {
+          const message = childSnapshot.val();
+          if (!userMap.has(message.uid)) {
+            userMap.set(message.uid, { uid: message.uid, name: message.name });
+          }
+        });
+        // Add admins to userMap if not already present
+        adminUsers.forEach(admin => {
+          if (!userMap.has(admin.uid)) {
+            userMap.set(admin.uid, admin);
+          }
+        });
+        renderUserList(Array.from(userMap.values()));
+      });
+    }
+
+    function renderUserList(users) {
+      usersUl.innerHTML = '';
+      users.forEach(user => {
+        const li = document.createElement('li');
+        li.textContent = user.name;
+        li.addEventListener('click', () => {
+          // Redirect to chat window page with user uid and name as query params
+          const url = `admin-chat.html?uid=${encodeURIComponent(user.uid)}&name=${encodeURIComponent(user.name)}`;
+          window.location.href = url;
+        });
+        usersUl.appendChild(li);
+      });
+    }
+
+    loadUsers();
+  </script>
+</body>
+</html>

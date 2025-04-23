@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Firebase Chat</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Firebase App (the core Firebase SDK) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <!-- Firebase Authentication -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+  <!-- Firebase Realtime Database -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+  <!-- Firebase Firestore -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+  <!-- Socket.io client -->
+  <script src="https://cdn.socket.io/4.6.1/socket.io.min.js" crossorigin="anonymous"></script>
+</head>
+  <body>
+    <header>
+      <nav>
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+          nav {
+            background: linear-gradient(90deg, #0052d4, #4364f7, #6fb1fc);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            font-family: 'Poppins', Arial, sans-serif;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+          }
+          body {
+            padding-top: 60px; /* height of nav + some spacing */
+          }
+          nav .title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+          }
+          nav .title svg.logo {
+            width: 40px;
+            height: 40px;
+            fill: white;
+            border-radius: 50%;
+            background: #4364f7;
+            padding: 4px;
+          }
+          nav .title img.logo {
+            height: 40px;
+            border-radius: 8px;
+          }
+          nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            margin-left: 1rem;
+            display: 300px;
+            align-items: center;
+            gap: 0.3rem;
+            position: relative;
+            padding-bottom: 2px;
+            transition: all 0.3s ease;
+          }
+          nav a:hover {
+            text-decoration: none;
+          }
+          nav a::after {
+            content: '';
+            position: absolute;
+            width: 0%;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: white;
+            transition: width 0.3s ease;
+          }
+          nav a:hover::after {
+            width: 100%;
+          }
+          nav a svg {
+            width: 18px;
+            height: 18px;
+            fill: white;
+          }
+        </style>
+        <div class="title">
+          <img src="BDlogo.jpg" alt="Logo" class="logo" />
+          <a href="portol.html" style="color: white; text-decoration: none;">portol</a>
+        </div>
+        <div>
+          <a href="index.html">
+            Chat
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 6h-2v9H5v2h14l4 4V6z"/></svg>
+          </a>
+        </div>
+      </nav>
+    </header>
+    <div id="container">
+      <h1> Chat</h1>
+      <div id="user-signed-out" class="auth-section">
+        <button id="sign-in-btn">Sign in with Google</button>
+      </div>
+      <div id="user-signed-in" class="auth-section hidden">
+        <div id="user-info">
+          <img id="user-pic" src="" alt="User Picture" />
+          <span id="user-name"></span>
+          <button id="sign-out-btn">Sign Out</button>
+        </div>
+        <div id="chat-window">
+          <ul id="messages"></ul>
+        </div>
+        <form id="message-form">
+          <input type="text" id="message-input" placeholder="Type a message..." autocomplete="off" required />
+          <button type="submit">Send</button>
+        </form>
+      </div>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>
